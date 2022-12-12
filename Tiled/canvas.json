@@ -1,0 +1,14 @@
+{ "columns":23,
+ "image":"canvas.png",
+ "imageheight":460,
+ "imagewidth":460,
+ "margin":0,
+ "name":"canvas",
+ "spacing":0,
+ "tilecount":529,
+ "tiledversion":"1.9.2",
+ "tileheight":20,
+ "tilewidth":20,
+ "type":"tileset",
+ "version":"1.9"
+}

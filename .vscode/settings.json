@@ -1,0 +1,10 @@
+{
+    "cSpell.words": [
+        "imageheight",
+        "imagewidth",
+        "keysym",
+        "playerx",
+        "playery"
+    ],
+    "python.analysis.typeCheckingMode": "basic"
+}
