@@ -67,24 +67,23 @@ def start():
 # game screen
 def middle():
     global root, p1, canvas, map_canvas, player, play, game_map, playerx, playery
+    p1 = multiprocessing.Process(target=game_audio)
+    p1.start()
     root = Tk()
     root.title("Code Creeps!")
     root.geometry("640x640")
     root.configure(background="black")
     canvas = Canvas(root, width=640, height=640, bg="lime")
     canvas.bind_all('<Key>', move)
-    map = ImageTk.PhotoImage(Image.open(
-        "./Images/Map.png").resize((2560, 2560)))
+    map = ImageTk.PhotoImage(Image.open("./Images/Map.png").resize((2560, 2560)))
     map_canvas = canvas.create_image(256, 256, image=map, anchor="nw")
-    player = ImageTk.PhotoImage(Image.open(
-        "./Images/Char.png").resize((64, 64)))
+    player = ImageTk.PhotoImage(Image.open("./Images/Char.png").resize((64, 64)))
     play = canvas.create_image(288, 288, image=player, anchor="nw")
     canvas.pack()
     root.mainloop()
     p1.kill()
 
 
-p1 = multiprocessing.Process(target=game_audio)
-p1.start()
-p2 = multiprocessing.Process(target=middle)
+
+p2 = multiprocessing.Process(target=start)
 p2.start()
