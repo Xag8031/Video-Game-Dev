@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 #test files
-test/
+#test/
+#Commented out because I want to keep the test folder in main right now
