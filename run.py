@@ -1,7 +1,7 @@
-from time import sleep
+#from time import sleep
 from tkinter import Tk, Canvas, Button
 #from playsound import playsound
-import multiprocessing
+#import multiprocessing
 from PIL import Image, ImageTk
 
 global p1, root
@@ -28,6 +28,10 @@ game_map = [[0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
+#TODO: Add Code Mode.
+#TODO: Add Editor To screen.
+#TODO: Add Audio to Middle.
+
 #Plays background audio
 #def game_audio():
 #    playsound('lady-of-the-80x27s-128379.mp3')
@@ -53,7 +57,7 @@ def move(event):
 #Need to add editor to app
 #Need to Create a custom close button
 def Title():
-    global root, canvas, Editor, start_button
+    global root, canvas, Editor, start_button, code_editor
     root = Tk()
     root.title("Code Creeps!")
     root.geometry("640x640")
@@ -63,14 +67,14 @@ def Title():
     canvas = Canvas(root, width=32*20, height=32*20)
     canvas.create_image(0, 0, anchor='nw', image=img)
     start_button = Button(root, text='Start', width=40, height=5, command=lambda: middle())
-    Editor = Button(root, text='Editor', width=40, height=5, command=lambda: editor())
+    Editor = Button(root, text='Editor', width=40, height=5, command=code_editor())
     canvas.pack()
     root.after(1000, lambda: start_button.place(x=root.winfo_width()/5, y=root.winfo_height()/1.75))
     root.after(1000, lambda: Editor.place(x=root.winfo_width()/1.5, y=root.winfo_height()/1.75))
     root.mainloop()
     #p1.kill()
 
-def editor():
+def code_editor():
     pass
 
 # game screen
@@ -81,7 +85,8 @@ def middle():
     #p1.start()
     canvas.pack_forget()
     Game_Canvas = Canvas(root, width=640, height=640, bg="lime")
-    Game_Canvas.bind_all('<Key>', move)
+    #Only if Keys mode is on
+    #Game_Canvas.bind_all('<Key>', move)
     map_image = ImageTk.PhotoImage(Image.open("./Images/Map.png").resize((2560, 2560)))
     map_canvas = Game_Canvas.create_image(256, 256, image=map_image, anchor="nw")
     player = ImageTk.PhotoImage(Image.open("./Images/Char.png").resize((64, 64)))
