@@ -1,0 +1,2 @@
+#this is a python file that will be used in my game using the commands move(dir) and look(). 
+help me
