@@ -1,6 +1,5 @@
-from tkinter import *
+from tkinter import Tk, END, Text, FLAT, BOTH
 import re
-import os
 
 # Increase dpi so it looks sharper cross platform
 
@@ -10,20 +9,14 @@ root = Tk()
 root.geometry('500x500')
 root.tk.call('tk', 'scaling', 2)
 
-# Execute the Programm
+# Save the Programm
 
 
-def execute(event=None):
+def save(event=None):
 
     # Write the Content to the Temporary File
-    with open('code.py', 'w', encoding='utf-8') as f:
+    with open('code.creeps', 'w', encoding='utf-8') as f:
         f.write(editArea.get('1.0', END))
-
-    # Execute the Temporary File in new terminal window (cross platform)
-    if os.name == 'nt':
-        os.system('start cmd /k python code.py')
-    else:
-        os.system('python3 code.py &')
 
 # Register Changes made to the Editor Content
 
@@ -108,14 +101,14 @@ editArea.pack(
 )
 
 # Insert some Standard Text into the Edit Area
-file = open('code.py', 'r', encoding='utf-8')
+file = open('code.creeps', 'r', encoding='utf-8')
 editArea.insert('1.0', file.read())
 
-# Bind the KeyRelase to the Changes Function
+# Bind the Key Release to the Changes Function
 editArea.bind('<KeyRelease>', changes)
 
-# Bind Control + R to the exec function
-root.bind('<Control-r>', execute)
+# Bind Control + S to the Save function
+root.bind('<Control-s>', save)
 
 changes()
 root.mainloop()

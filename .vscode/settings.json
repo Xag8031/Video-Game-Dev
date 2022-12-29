@@ -4,7 +4,8 @@
         "imagewidth",
         "keysym",
         "playerx",
-        "playery"
+        "playery",
+        "playsound"
     ],
     "python.analysis.typeCheckingMode": "basic"
 }
