@@ -1,7 +1,7 @@
 ;c this is a python file that will be used in my game using the commands move(dir) and look().
 ; it will be used to move the player around the map and look at the map.
-; move(left)
-; move(right)
+move(left)
+move(right)
 move(up)
 move(down)
 look()
