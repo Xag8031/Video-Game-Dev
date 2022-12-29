@@ -1,11 +1,12 @@
-open_file = open("./code.creeps", "r")
-txt = open_file.read()
-txt = txt.split("\n")
-for line in txt:
-    if line.startswith(";"):
-        print("Comment")
-        txt.remove(line)
-    else:
-        print("Code")
+txt = []
+with open("code.creeps", "r") as f:
+    for line in f:
+        if line.startswith(";"):
+            print("Comment")
+            
+        else:
+            print("Code")
+            line = line.replace("\n", "")
+            txt.append(line)
 for pronter in txt:
     print(pronter)
