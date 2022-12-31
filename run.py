@@ -1,13 +1,12 @@
 "This game is a maze game where you have to find the hidden flag to win the game."
 
 
-import multiprocessing
+import threading
 import os
 from tkinter import Button, Canvas, Tk, messagebox
+import wave
 from PIL import Image, ImageTk
-from playsound import playsound
-import subprocess
-
+import simpleaudio
 
 
 # map stuff
@@ -39,21 +38,27 @@ with open("points.txt", encoding="utf-8") as file_data:
     points.append(file_data.read().split("\n"))
 POINT = 0
 
+with wave.open('audio.mp3', 'rb') as audio_file:
+    # Extract the audio data from the file
+    audio_data = audio_file.readframes(audio_file.getnframes())
+
 # TODO: Add Look to code mode.
 # TODO: Add Look to key mode.
 # TODO: Add return button to editor.
-# TODO: Add Audio to Middle.
 # TODO: Add message box for Audio on or off.
 # TODO: Add points to game finder?
 # TODO: Add a way to gain points.
 # TODO: Need to add editor to app.
-# TODO: Need to Create a custom close button
 
 
-# Plays background audio
-def game_audio():
-    """Plays the specified audio file in a separate process."""
-    subprocess.run(['playsound', "lady-of-the-80x27s-128379.mp3"])
+def play_audio():
+    """Plays the audio file in a separate thread
+    """
+    global THREAD # pylint: disable=W0601
+    # Play the audio file in a separate thread
+    THREAD = threading.Thread(
+        target=simpleaudio.play_buffer, args=(audio_data,))
+    THREAD.start()
 
 
 # Moves the background image around the character
@@ -81,7 +86,7 @@ def move_key(event):
     flags(POINT)
 
 
-def move_code(movement, playerx, playery): # pylint: disable=W0621
+def move_code(movement, playerx, playery):  # pylint: disable=W0621
     """This is the code to move the character in code mode
 
     Args:
@@ -125,7 +130,8 @@ def title():
     )
     root.after(
         1000,
-        lambda: Editor.place(x=root.winfo_width() / 1.5, y=root.winfo_height() / 1.75),
+        lambda: Editor.place(x=root.winfo_width() / 1.5,
+                             y=root.winfo_height() / 1.75),
     )
     root.mainloop()
 
@@ -146,7 +152,7 @@ def before_middle():
         title="Code Creeps!", message="Do you want to play with Audio?"
     )
     if audio_mode == "yes":
-        audio_file.start()
+        play_audio()
     middle(key_mode)
 
 
@@ -185,7 +191,7 @@ def on_closing():
     """Checks if the window is trying to close then asks the player if they want to quit"""
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
         root.destroy()
-        audio_file.terminate()
+        simpleaudio.stop_all()
 
 
 root = Tk()
@@ -194,15 +200,15 @@ img = ImageTk.PhotoImage(
 )
 canvas = Canvas(root, width=32 * 20, height=32 * 20)
 Game_Canvas = Canvas(root, width=640, height=640, bg="lime")
-Map_image = ImageTk.PhotoImage(Image.open("./Images/Map.png").resize((2560, 2560)))
+Map_image = ImageTk.PhotoImage(Image.open(
+    "./Images/Map.png").resize((2560, 2560)))
 map_canvas = Game_Canvas.create_image(256, 256, image=Map_image, anchor="nw")
 start_button = Button(
-    root, text="Start", width=40, height=5, command=lambda: before_middle() # pylint: disable=W0108
+    root, text="Start", width=40, height=5, command=lambda: before_middle()  # pylint: disable=W0108
 )
 Editor = Button(
-    root, text="Editor", width=40, height=5, command=lambda: code_editor() # pylint: disable=W0108
+    root, text="Editor", width=40, height=5, command=lambda: code_editor()  # pylint: disable=W0108
 )
 root.protocol("WM_DELETE_WINDOW", on_closing)
 player = ImageTk.PhotoImage(Image.open("./Images/Char.png").resize((64, 64)))
-audio_file = multiprocessing.Process(target=game_audio)
 title()

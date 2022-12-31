@@ -1,6 +1,7 @@
 from tkinter import Tk, END, Text, FLAT, BOTH
 import re
-
+import sys
+import os
 # Increase dpi so it looks sharper cross platform
 
 
@@ -9,7 +10,7 @@ root = Tk()
 root.geometry('500x500')
 root.tk.call('tk', 'scaling', 2)
 
-# Save the Programm
+# Save the Program
 
 
 def save(event=None):
@@ -17,6 +18,10 @@ def save(event=None):
     # Write the Content to the Temporary File
     with open('code.creeps', 'w', encoding='utf-8') as f:
         f.write(editArea.get('1.0', END))
+
+def go_back(event=None):
+    python = sys.executable
+    os.execl(python, python, *sys.argv)
 
 # Register Changes made to the Editor Content
 
@@ -109,6 +114,7 @@ editArea.bind('<KeyRelease>', changes)
 
 # Bind Control + S to the Save function
 root.bind('<Control-s>', save)
+root.bind('<Control-r', go_back)
 
 changes()
 root.mainloop()

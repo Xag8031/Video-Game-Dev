@@ -5,7 +5,8 @@
         "keysym",
         "playerx",
         "playery",
-        "playsound"
+        "playsound",
+        "simpleaudio"
     ],
     "python.analysis.typeCheckingMode": "basic"
 }
