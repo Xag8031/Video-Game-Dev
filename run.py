@@ -1,13 +1,13 @@
 "This game is a maze game where you have to find the hidden flag to win the game."
 
 
-import threading
 import os
-from tkinter import Button, Canvas, Tk, messagebox
-from PIL import Image, ImageTk
-import wave
-import pyaudio
 import threading
+import wave
+from tkinter import Button, Canvas, Tk, messagebox
+
+import pyaudio
+from PIL import Image, ImageTk
 
 p = pyaudio.PyAudio()
 stream = None
@@ -44,13 +44,14 @@ game_map = [
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
-points = []
-with open("points.txt", encoding="utf-8") as file_data:
-    points.append(file_data.read().split("\n"))
+points = [[13, 13],
+[8, 18],
+[11, 13],
+[16, 14],
+[16, 2]]
 POINT = 0
-
-# TODO: Add Look to code mode.
-# TODO: Add Look to key mode.
+# TODO: Add flags to code mode.
+# TODO: Add flags to key mode.
 # TODO: Add return button to editor.
 # TODO: Add message box for Audio on or off.
 # TODO: Add points to game finder?
@@ -76,9 +77,12 @@ def move_key(event):
     elif event.keysym == "Right" and game_map[playery][playerx + 1] != 1:
         Game_Canvas.move(map_canvas, -128, 0)
         playerx += 1
+    elif event.keysym == "r":
+        print(points)
     else:
         print("Not a Moveable Space")
-    flags(POINT)
+    print(playerx, playery)
+    flags()
 
 
 def move_code(movement, playerx, playery):  # pylint: disable=W0621
@@ -101,14 +105,21 @@ def move_code(movement, playerx, playery):  # pylint: disable=W0621
         playerx += 1
     else:
         print("Not a Moveable Space")
-    flags(POINT)
+    print(f'[{playery}, {playerx}]')
+    flags()
 
 
-def flags(point):
+def flags():
+    global POINT
     """Checks if the player has reached a flag"""
-    if points[point] == [playery, playerx]:
-        point = point + 1
-    print(point)
+    x = [playery, playerx]
+    t = points[POINT]
+    print(x)
+    print(t)
+    print(f'[{playery}, {playerx}]')
+    if all(item in points[POINT] for item in x):
+        POINT = POINT + 1
+    print(POINT)
 
 
 def title():
@@ -160,7 +171,9 @@ def play_wav(filepath):
                 stream.write(data)
                 data = file.readframes(1024)
 
-
+def flags_print():
+    """Prints the flags to the console"""
+    print(points)
 def before_middle():
     """Asks the player if they want to play in key mode or code mode"""
     key_mode = messagebox.askquestion(
@@ -202,6 +215,8 @@ def middle(key_mode):
         for i in done:
             if i[0] == "move":
                 move_code(i[1], playerx, playery)
+            if i[0] == "flags":
+                flags_print()
     Game_Canvas.create_image(288, 288, image=player, anchor="nw")
     Game_Canvas.pack()
 
@@ -211,7 +226,7 @@ def on_closing():
     """Checks if the window is trying to close then asks the player if they want to quit"""
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
         root.destroy()
-        stream.stop_stream()
+        stream.stop_stream() # type: ignore
         p.terminate()
 
 

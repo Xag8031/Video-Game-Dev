@@ -25,9 +25,10 @@ points = []
 # Generate random coordinates until the points list has a length of 5
 while len(points) != 5:
     x, y = random.randint(0, 19), random.randint(0, 19)
-    while game_map[x][y] == 1:
+    if game_map[x][y] == 1:
         x, y = random.randint(0, 19), random.randint(0, 19)
-    points.append([x, y])
+    else:
+        points.append([y, x])
 
 # Open a file in write mode
 with open('points.txt', 'w') as f:

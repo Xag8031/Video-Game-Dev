@@ -6,6 +6,7 @@
         "playerx",
         "playery",
         "playsound",
+        "pyaudio",
         "simpleaudio"
     ],
     "python.analysis.typeCheckingMode": "basic"
