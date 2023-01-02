@@ -4,9 +4,20 @@
 import threading
 import os
 from tkinter import Button, Canvas, Tk, messagebox
-import wave
 from PIL import Image, ImageTk
-import simpleaudio
+import wave
+import pyaudio
+import threading
+
+p = pyaudio.PyAudio()
+stream = None
+
+
+
+# Example usage
+
+
+
 
 
 # map stuff
@@ -38,28 +49,12 @@ with open("points.txt", encoding="utf-8") as file_data:
     points.append(file_data.read().split("\n"))
 POINT = 0
 
-with wave.open('audio.mp3', 'rb') as audio_file:
-    # Extract the audio data from the file
-    audio_data = audio_file.readframes(audio_file.getnframes())
-
 # TODO: Add Look to code mode.
 # TODO: Add Look to key mode.
 # TODO: Add return button to editor.
 # TODO: Add message box for Audio on or off.
 # TODO: Add points to game finder?
 # TODO: Add a way to gain points.
-# TODO: Need to add editor to app.
-
-
-def play_audio():
-    """Plays the audio file in a separate thread
-    """
-    global THREAD # pylint: disable=W0601
-    # Play the audio file in a separate thread
-    THREAD = threading.Thread(
-        target=simpleaudio.play_buffer, args=(audio_data,))
-    THREAD.start()
-
 
 # Moves the background image around the character
 def move_key(event):
@@ -113,6 +108,7 @@ def flags(point):
     """Checks if the player has reached a flag"""
     if points[point] == [playery, playerx]:
         point = point + 1
+    print(point)
 
 
 def title():
@@ -142,6 +138,28 @@ def code_editor():
     # run a python file that will open the code editor cross platform
     os.system("python3 code_editor.py")
 
+def play_wav(filepath):
+    global stream
+    # Open the WAV file
+    with wave.open(filepath, "rb") as file:
+        # Initialize PyAudio
+        global p
+        p = pyaudio.PyAudio()
+
+        # Open a streaming module
+        stream = p.open(format=p.get_format_from_width(file.getsampwidth()),
+                        channels=file.getnchannels(),
+                        rate=file.getframerate(),
+                        output=True)
+
+        # Read and play the WAV file in a loop
+        while True:
+            file.rewind()
+            data = file.readframes(1024)
+            while data:
+                stream.write(data)
+                data = file.readframes(1024)
+
 
 def before_middle():
     """Asks the player if they want to play in key mode or code mode"""
@@ -152,7 +170,8 @@ def before_middle():
         title="Code Creeps!", message="Do you want to play with Audio?"
     )
     if audio_mode == "yes":
-        play_audio()
+        thread = threading.Thread(target=play_wav, args=("audio.wav",))
+        thread.start()
     middle(key_mode)
 
 
@@ -174,7 +193,7 @@ def middle(key_mode):
         done = []
         with open("code.creeps", encoding="utf-8") as data_of_file:
             for line in data_of_file:
-                if line[0] != ";":
+                if line[0] != "#":
                     command = line.strip()
                     parts = command.split("(")
                     name = parts[0]
@@ -188,10 +207,15 @@ def middle(key_mode):
 
 
 def on_closing():
+    global stream
     """Checks if the window is trying to close then asks the player if they want to quit"""
     if messagebox.askokcancel("Quit", "Do you want to quit?"):
         root.destroy()
-        simpleaudio.stop_all()
+        stream.stop_stream()
+        p.terminate()
+
+
+
 
 
 root = Tk()
