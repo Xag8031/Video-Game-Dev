@@ -1,24 +1,16 @@
 "This game is a maze game where you have to find the hidden flag to win the game."
 
-
 import os
 import threading
 import wave
-from tkinter import Button, Canvas, Tk, messagebox
+from tkinter import Button, Canvas, Tk, messagebox, Label
+import tkinter as tk
 
 import pyaudio
 from PIL import Image, ImageTk
 
 p = pyaudio.PyAudio()
 stream = None
-
-
-
-# Example usage
-
-
-
-
 
 # map stuff
 playerx, playery = 0, 0
@@ -44,18 +36,23 @@ game_map = [
     [1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
+x , y = 288, 288
+# points stuff
 points = [[13, 13],
 [8, 18],
 [11, 13],
 [16, 14],
 [16, 2]]
 POINT = 0
+
 # TODO: Add flags to code mode.
 # TODO: Add flags to key mode.
 # TODO: Add return button to editor.
 # TODO: Add message box for Audio on or off.
 # TODO: Add points to game finder?
 # TODO: Add a way to gain points.
+
+
 
 # Moves the background image around the character
 def move_key(event):
@@ -67,6 +64,7 @@ def move_key(event):
     global playerx, playery  # pylint: disable=C0103,W0603
     if event.keysym == "Up" and game_map[playery - 1][playerx] != 1:
         Game_Canvas.move(map_canvas, 0, 128)
+        
         playery -= 1
     elif event.keysym == "Down" and game_map[playery + 1][playerx] != 1:
         Game_Canvas.move(map_canvas, 0, -128)
@@ -78,11 +76,12 @@ def move_key(event):
         Game_Canvas.move(map_canvas, -128, 0)
         playerx += 1
     elif event.keysym == "r":
-        print(points)
+        print("r")
+        flags("show")
     else:
         print("Not a Moveable Space")
     print(playerx, playery)
-    flags()
+    flags("check")
 
 
 def move_code(movement, playerx, playery):  # pylint: disable=W0621
@@ -105,13 +104,16 @@ def move_code(movement, playerx, playery):  # pylint: disable=W0621
         playerx += 1
     else:
         print("Not a Moveable Space")
-    print(f'[{playery}, {playerx}]')
-    flags()
+    # make a item that displays the player's position
+    pos_lable.configure(text=f"Player Position: [{playery}, {playerx}]")
+    flags("check")
 
 
-def flags():
+def flags(args):
     global POINT
     """Checks if the player has reached a flag"""
+    root.title(f"Code Creeps!: {points[POINT]}")
+    
     x = [playery, playerx]
     t = points[POINT]
     print(x)
@@ -119,7 +121,10 @@ def flags():
     print(f'[{playery}, {playerx}]')
     if all(item in points[POINT] for item in x):
         POINT = POINT + 1
+    if POINT == 5:
+        game_end()
     print(POINT)
+            
 
 
 def title():
@@ -174,6 +179,7 @@ def play_wav(filepath):
 def flags_print():
     """Prints the flags to the console"""
     print(points)
+    
 def before_middle():
     """Asks the player if they want to play in key mode or code mode"""
     key_mode = messagebox.askquestion(
@@ -200,6 +206,7 @@ def middle(key_mode):
     Editor.place_forget()
     start_button.place_forget()
     canvas.pack_forget()
+    pos_lable.place(x=0, y=0)
     if key_mode == "yes":
         Game_Canvas.bind_all("<Key>", move_key)
     else:
@@ -220,6 +227,12 @@ def middle(key_mode):
     Game_Canvas.create_image(288, 288, image=player, anchor="nw")
     Game_Canvas.pack()
 
+def game_end():
+    """This is the end screen for the game"""
+    Game_Canvas.pack_forget()
+    messagebox.showerror(title="Code Creeps!", message="You have won the game!")
+    on_closing()
+    
 
 def on_closing():
     global stream
@@ -248,6 +261,7 @@ start_button = Button(
 Editor = Button(
     root, text="Editor", width=40, height=5, command=lambda: code_editor()  # pylint: disable=W0108
 )
+pos_lable = Label(root, text=f"Player position: [{playerx}, {playery}]", bg="black", fg="white",)
 root.protocol("WM_DELETE_WINDOW", on_closing)
 player = ImageTk.PhotoImage(Image.open("./Images/Char.png").resize((64, 64)))
 title()
