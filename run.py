@@ -45,12 +45,7 @@ points = [[13, 13],
 [16, 2]]
 POINT = 0
 
-# TODO: Add flags to code mode.
-# TODO: Add flags to key mode.
 # TODO: Add return button to editor.
-# TODO: Add message box for Audio on or off.
-# TODO: Add points to game finder?
-# TODO: Add a way to gain points.
 
 
 
