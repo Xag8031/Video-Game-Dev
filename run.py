@@ -46,7 +46,9 @@ points = [[13, 13],
 POINT = 0
 
 # TODO: Add return button to editor.
-
+# TODO: Add Goal to game.
+# TODO: Add keys to press.
+# TODO: add second ui commonit
 
 
 # Moves the background image around the character
@@ -75,6 +77,8 @@ def move_key(event):
         flags("show")
     else:
         print("Not a Moveable Space")
+    pos_lable["text"] = f"Player Position: [{playerx},{playery}]"
+    pos_lable.update()
     print(playerx, playery)
     flags("check")
 
@@ -100,7 +104,6 @@ def move_code(movement, playerx, playery):  # pylint: disable=W0621
     else:
         print("Not a Moveable Space")
     # make a item that displays the player's position
-    pos_lable.configure(text=f"Player Position: [{playery}, {playerx}]")
     flags("check")
 
 
@@ -201,7 +204,7 @@ def middle(key_mode):
     Editor.place_forget()
     start_button.place_forget()
     canvas.pack_forget()
-    pos_lable.place(x=0, y=0)
+    pos_lable.place(x=0,y=0)
     if key_mode == "yes":
         Game_Canvas.bind_all("<Key>", move_key)
     else:
@@ -257,6 +260,7 @@ Editor = Button(
     root, text="Editor", width=40, height=5, command=lambda: code_editor()  # pylint: disable=W0108
 )
 pos_lable = Label(root, text=f"Player position: [{playerx}, {playery}]", bg="black", fg="white",)
+
 root.protocol("WM_DELETE_WINDOW", on_closing)
 player = ImageTk.PhotoImage(Image.open("./Images/Char.png").resize((64, 64)))
 title()
