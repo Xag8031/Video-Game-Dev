@@ -23,15 +23,17 @@ game_map = [[0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
 points = []
 
 # Generate random coordinates until the points list has a length of 5
-while len(points) != 5:
+while len(points) != 25:
     x, y = random.randint(0, 19), random.randint(0, 19)
     if game_map[x][y] == 1:
         x, y = random.randint(0, 19), random.randint(0, 19)
     else:
-        points.append([y, x])
+        if [y, x] not in points:
+            points.append([y, x])
 
 # Open a file in write mode
 with open('points.txt', 'w') as f:
     # Write the points list to the file, one point per line
     for point in points:
         f.write(str(point) + '\n')
+print(f)
