@@ -112,7 +112,7 @@ def move_key(event):
         Game_Canvas.move(map_canvas, -128, 0)
         playerx += 1
     pos_lable["text"] = f"Player Position: [{playerx},{playery}]"
-    pos_lable.update()
+    pos_lable.update("Code Creeps!", "You Just got a point!")
     poi_lable["text"] = f"Points: {points[POINT]}"
     poi_lable.update()
     flags()
@@ -147,6 +147,7 @@ def flags():
     x = [playery, playerx]
     if all(item in points[POINT] for item in x):
         POINT = POINT + 1
+        messagebox.showinfo()
     if POINT == len(points):
         game_end()
     pos_lable["text"] = f"Player Position: [{playerx},{playery}]"
